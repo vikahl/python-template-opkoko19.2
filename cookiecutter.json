@@ -1,0 +1,13 @@
+{
+  "project_name": "Python project template",
+  "short_description": "Python project template is an example of a template written to be used with cookiecutter to quickly generate new Python modules",
+  "module_name": "{{ cookiecutter.project_name.lower().replace(' ', '_').replace('-', '_') }}",
+  "author": "Viktor Ahlqvist",
+  "email": "",
+  "homepage": "",
+  "min_python": "3.6",
+  "license": ["MIT - simple and permissive",
+    "Apache - explicitly grants patent rights",
+    "GPL - ensures that code based on this is shared with the same terms"],
+  "version": "0.1.0"
+}

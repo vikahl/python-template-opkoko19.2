@@ -1,0 +1,77 @@
+[tool.black]
+line-length = 110
+
+[build-system]
+requires = ["flit"]
+build-backend = "flit.buildapi"
+
+[tool.flit.metadata]
+module = "{{ cookiecutter.module_name }}"
+author = "{{ cookiecutter.author }}"
+author-email = "{{ cookiecutter.email }}"
+home-page = "{{ cookiecutter.homepage }}"
+description-file = "README.md"
+requires-python=">={{ cookiecutter.min_python }}"
+classifiers = [
+  {% if cookiecutter.license == "MIT - simple and permissive" %}
+    "License :: OSI Approved :: MIT License",
+  {% endif %}
+  {% if cookiecutter.license == "Apache - explicitly grants patent rights" %}
+    "License :: OSI Approved :: Apache Software License",
+  {% endif %}
+  {% if cookiecutter.license == "GPL - ensures that code based on this is shared with the same terms" %}
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+  {% endif %}
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+]
+
+[tool.flit.metadata.requires-extra]
+test = ["pytest",
+        "pytest-cov",
+        "pytest-mock",
+        "tox",
+        "black",
+        "pylint",
+        "mypy",
+        "pre-commit"
+]
+
+[tool.flit.scripts]
+todo_extractor = "{{ cookiecutter.module_name }}:main"
+
+[tool.tox]
+legacy_tox_ini = """
+[tox]
+envlist =
+    black,
+    lint,
+    types,
+    py36,
+    py37,
+    py38
+isolated_build = True
+
+[testenv]
+deps =
+  pytest
+  pytest-cov
+  pytest-mock
+changedir = {toxinidir}/tests
+commands = python3 -m pytest --cov={envsitepackagesdir}/{{ cookiecutter.module_name }}
+
+[testenv:black]
+basepython = python3.6
+deps = black
+commands = black . --diff --check -l 120
+
+[testenv:lint]
+basepython = python3.6
+deps = pylint
+commands = pylint --rcfile={toxinidir}/pylintrc {envsitepackagesdir}/{{ cookiecutter.module_name }}
+
+[testenv:types]
+basepython = python3.6
+deps = mypy
+commands = python3 -m mypy {toxinidir}/{{ cookiecutter.module_name }}
+"""
