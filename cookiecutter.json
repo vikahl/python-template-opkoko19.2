@@ -4,7 +4,7 @@
   "module_name": "{{ cookiecutter.project_name.lower().replace(' ', '_').replace('-', '_') }}",
   "author": "Viktor Ahlqvist",
   "email": "",
-  "homepage": "",
+  "homepage": "http://github.com/vikahl",
   "min_python": "3.6",
   "license": ["MIT - simple and permissive",
     "Apache - explicitly grants patent rights",
