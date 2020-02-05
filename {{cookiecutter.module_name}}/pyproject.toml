@@ -1,6 +1,3 @@
-[tool.black]
-line-length = 110
-
 [build-system]
 requires = ["flit"]
 build-backend = "flit.buildapi"
@@ -13,6 +10,8 @@ home-page = "{{ cookiecutter.homepage }}"
 description-file = "README.md"
 requires-python=">={{ cookiecutter.min_python }}"
 classifiers = [
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
   {% if cookiecutter.license == "MIT - simple and permissive" %}
     "License :: OSI Approved :: MIT License",
   {% endif %}
@@ -22,8 +21,6 @@ classifiers = [
   {% if cookiecutter.license == "GPL - ensures that code based on this is shared with the same terms" %}
     "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
   {% endif %}
-  "Programming Language :: Python",
-  "Programming Language :: Python :: 3",
 ]
 
 [tool.flit.metadata.requires-extra]
@@ -34,16 +31,18 @@ test = ["pytest",
         "black",
         "pylint",
         "mypy",
-        "pre-commit"
+        "isort[pyproject]"
 ]
+dev = ["pre-commit"]
 
 [tool.flit.scripts]
-todo_extractor = "{{ cookiecutter.module_name }}:main"
+{{ cookiecutter.module_name }} = "{{ cookiecutter.module_name }}:main"
 
 [tool.tox]
 legacy_tox_ini = """
 [tox]
 envlist =
+    isort,
     black,
     lint,
     types,
@@ -51,6 +50,12 @@ envlist =
     py37,
     py38
 isolated_build = True
+
+[gh-actions]
+python =
+    3.6: py36
+    3.7: py37
+    3.8: py38, isort, black, lint, types
 
 [testenv]
 deps =
@@ -61,17 +66,33 @@ changedir = {toxinidir}/tests
 commands = python3 -m pytest --cov={envsitepackagesdir}/{{ cookiecutter.module_name }}
 
 [testenv:black]
-basepython = python3.6
+basepython = python3.8
 deps = black
+changedir = {toxinidir}
 commands = black . --diff --check
 
 [testenv:lint]
-basepython = python3.6
+basepython = python3.8
 deps = pylint
 commands = pylint --rcfile={toxinidir}/pylintrc {envsitepackagesdir}/{{ cookiecutter.module_name }}
 
 [testenv:types]
-basepython = python3.6
+basepython = python3.8
 deps = mypy
 commands = python3 -m mypy {toxinidir}/{{ cookiecutter.module_name }}
+
+[testenv:isort]
+basepython = python3.8
+deps = isort[pyproject]
+commands = isort -rc {toxinidir}/{{ cookiecutter.module_name }}
 """
+
+[tool.black]
+line-length = 110
+
+[tool.isort]
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+line_length = 110
